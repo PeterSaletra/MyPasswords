@@ -1,0 +1,2 @@
+# MyPasswords
+CLI password manager
