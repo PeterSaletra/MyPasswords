@@ -1,58 +1,26 @@
-import os
-from subprocess import call
-
-
-def clear() -> None:
-    _ = call("clear" if os.name == "posix" else "cls")
-
-
-def showOptions() -> None:
-    size = os.get_terminal_size()[0]
-    print(
-        ("{:^" + str(size) + "}").format(
-            "__  __       _____                                    _"
-        )
-    )
-    print(
-        ("{:^" + str(size) + "}").format(
-            "|  \/  |     |  __ \                                  | |"
-        )
-    )
-    print(
-        ("{:^" + str(size) + "}").format(
-            "   | \  / |_   _| |__) |_ _ ___ _____      _____  _ __ __| |___"
-        )
-    )
-    print(
-        ("{:^" + str(size) + "}").format(
-            "    | |\/| | | | |  ___/ _` / __/ __\ \ /\ / / _ \| '__/ _` / __|"
-        )
-    )
-    print(
-        ("{:^" + str(size) + "}").format(
-            "    | |  | | |_| | |  | (_| \__ \__ \\\\ V  V / (_) | | | (_| \__ \\"
-        )
-    )
-    print(
-        ("{:^" + str(size) + "}").format(
-            "    |_|  |_|\__, |_|   \__,_|___/___/ \_/\_/ \___/|_|  \__,_|___/"
-        )
-    )
-    print(
-        ("{:^" + str(size) + "}").format(
-            "            __/ |                                               "
-        )
-    )
-    print(
-        ("{:^" + str(size) + "}").format(
-            "           |___/                                                "
-        )
-    )
-    print(("{:^" + str(size) + "}").format("Welcom to MyPassword"))
-    print(("{:^" + str(size) + "}").format("Your private password manager"))
-
+from sample.startup import StartUp
+from sample.utils import clear
+from sample.utils import userInput
+import time
 
 if __name__ == "__main__":
+    startUP = StartUp()
     clear()
-    showOptions()
-    opt = input("")
+    startUP.showOptions()
+    opt = userInput()
+
+    while True:
+        if opt is "l" or opt is "login":
+            startUP.login()
+            break
+        elif opt is "s" or opt is "signUp":
+            startUP.signUp()
+            break
+        elif opt is "q" or opt is "quit":
+            print("Quiting program")
+            time.sleep(1)
+            clear()
+            break
+        else:
+            print("Invalid input. Try again")
+            opt = userInput()
