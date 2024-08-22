@@ -1,4 +1,5 @@
 env/
+.env
 .mypy_chache:
 __pycache__/
 *.py[cod]
