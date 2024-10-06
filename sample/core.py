@@ -3,6 +3,7 @@ import sys
 import time
 from sample.db import (
     createNewDB,
+    dbDeletePassowrd,
     dbgetAllPasswords,
     dbgetPassword,
     dbinsertPassword,
@@ -181,7 +182,7 @@ def signUp(opt: list) -> None:
                 if password == repeatPass:
                     break
                 else:
-                    print("Somthing is wrong with password try again")
+                    print("Something is wrong with password try again")
 
             if dbsignUp(login, password):
                 LOGIN = True
@@ -266,8 +267,19 @@ def getPassword(opt: list) -> None:
 
 
 def deletePassword(opt: list) -> None:
-    pass
+    global LOGIN, USERNAME
+    if LOGIN:
+        if opt and len(opt) == 1:
+            passName = opt[0]
 
+            if dbDeletePassowrd(passName, USERNAME):
+                print("Passoword successfully deleted")
+            else:
+                print("Something wrong with password name. Please try again")
+        else:
+            pass
+            #to finish
+            
 
 def changePassword(opt: list) -> None:
     pass

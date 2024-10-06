@@ -162,6 +162,24 @@ def dbinsertPassword(
     return True
 
 
+def dbDeletePassowrd(passName: str, username: str) -> bool:
+    sql = ""
+    try:
+        conn = sqlite3.connect("mypasswords.db")
+        cur = conn.cursor()
+
+        cur.execute(sql, (passName, username))
+        conn.commit()
+    except sqlite3.Error as e:
+        logging.error(e)
+        return False
+    finally:
+        cur.close()
+        conn.close()
+
+    return True
+
+
 def row_to_dict(cursor: sqlite3.Cursor, row: sqlite3.Row) -> dict:
     data = {}
     for idx, col in enumerate(cursor.description):
