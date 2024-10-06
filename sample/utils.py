@@ -5,6 +5,7 @@ import subprocess
 import platform
 import subprocess
 
+from sample.color.color import Color
 
 def copy2clip(data: str) -> None:
     if platform.system() == "Linux":
@@ -21,7 +22,7 @@ def clear() -> None:
 
 def userInput(path: str = "", username: str = "") -> str:
     if username:
-        return input("@" + username + " " + path + "-> ")
+        return input(Color.letters.green + "@" + username + Color.reset + " " + path + "-> ")
     return input(path + "-> ")
 
 

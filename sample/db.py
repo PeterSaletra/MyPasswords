@@ -1,9 +1,7 @@
-from os.path import isfile
 import sqlite3
 import logging
 import time
 import os
-import json
 
 
 def createNewDB() -> bool:
@@ -41,8 +39,10 @@ def createNewDB() -> bool:
             );
             """,
     ]
-    print("Creating database...")
     if not os.path.isfile("mypasswords.db"):
+        print("Creating database...")
+        conn = None
+        cur = None
         try:
             conn = sqlite3.connect("mypasswords.db")
             cur = conn.cursor()
@@ -53,10 +53,12 @@ def createNewDB() -> bool:
         except sqlite3.Error as e:
             logging.error(e)
         finally:
-            cur.close()
-            conn.close()
+            if cur is not None:
+                cur.close()
+            if conn is not None:
+                conn.close()
     else:
-        print("Database already exists. Adding user to existing database")
+        print("Database already exists")
         return True
 
     return False
@@ -64,7 +66,8 @@ def createNewDB() -> bool:
 
 def dblogin(user: str, password: str) -> bool:
     sql = "SELECT password from users where login=?"
-
+    conn = None
+    cur = None
     try:
         conn = sqlite3.connect("mypasswords.db")
         conn.row_factory = row_to_dict
@@ -78,14 +81,18 @@ def dblogin(user: str, password: str) -> bool:
         logging.error(e)
         return False
     finally:
-        cur.close()
-        conn.close()
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
 
     return False
 
 
 def dbsignUp(user: str, password: str) -> bool:
     sql = "INSERT INTO users (login, password, lastlogin) VALUES (?, ?, ?)"
+    conn = None
+    cur = None
     try:
         conn = sqlite3.connect("mypasswords.db")
         cur = conn.cursor()
@@ -96,15 +103,18 @@ def dbsignUp(user: str, password: str) -> bool:
         logging.error(e)
         return False
     finally:
-        cur.close()
-        conn.close()
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
 
     return True
 
 
 def dbgetPassword(passName: str, username: str) -> list:
     sql = "SELECT name, password, url, folder_id FROM passwords WHERE user_id=? AND name=?"
-
+    conn = None
+    cur = None
     try:
         conn = sqlite3.connect("mypasswords.db")
         conn.row_factory = row_to_dict
@@ -115,8 +125,10 @@ def dbgetPassword(passName: str, username: str) -> list:
     except sqlite3.Error as e:
         logging.error(e)
     finally:
-        cur.close()
-        conn.close()
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
 
     return []
 
@@ -124,6 +136,8 @@ def dbgetPassword(passName: str, username: str) -> list:
 def dbgetAllPasswords(username: str) -> list:
     sql = "SELECT name, password, url FROM passwords WHERE user_id=?"
     passDict = []
+    conn = None
+    cur = None
     try:
         conn = sqlite3.connect("mypasswords.db")
         conn.row_factory = row_to_dict
@@ -136,16 +150,18 @@ def dbgetAllPasswords(username: str) -> list:
     except sqlite3.Error as e:
         logging.error(e)
     finally:
-        cur.close()
-        conn.close()
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
 
     return passDict
 
 
-def dbinsertPassword(
-    passName: str, password: str, url: str, folder: str, username: str
-) -> bool:
+def dbinsertPassword(passName: str, password: str, url: str, folder: str, username: str) -> bool:
     sql = "INSERT INTO passwords (name, password, url, folder_id, user_id) VALUES(?, ?, ?, ?, ?)"
+    conn = None
+    cur = None
     try:
         conn = sqlite3.connect("mypasswords.db")
         cur = conn.cursor()
@@ -156,14 +172,18 @@ def dbinsertPassword(
         logging.error(e)
         return False
     finally:
-        cur.close()
-        conn.close()
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
 
     return True
 
 
 def dbDeletePassowrd(passName: str, username: str) -> bool:
-    sql = ""
+    sql = "DELTE FRON passwords WHERE name=? and user_id=?"
+    conn = None
+    cur = None
     try:
         conn = sqlite3.connect("mypasswords.db")
         cur = conn.cursor()
@@ -174,8 +194,10 @@ def dbDeletePassowrd(passName: str, username: str) -> bool:
         logging.error(e)
         return False
     finally:
-        cur.close()
-        conn.close()
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
 
     return True
 

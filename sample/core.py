@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+from sample.color.printColor import printBlackOnWhite, printGreen, printRed
 from sample.db import (
     createNewDB,
     dbDeletePassowrd,
@@ -20,6 +21,7 @@ from sample.utils import (
 )
 
 
+
 SIZE = os.get_terminal_size()[0]
 LOGIN = False
 USERNAME = ""
@@ -32,7 +34,8 @@ def main() -> None:
     opt = userInput()
 
     while True:
-        opt = opt.split() if opt else "w".split()
+        opt = opt.split() if opt else "`".split()
+        # This ` is for ability to spam enter key to the infinity but must think off other way of doing that(later)
 
         if opt[0] == "l" or opt[0] == "login":
             login(opt[1::])
@@ -57,8 +60,8 @@ def main() -> None:
         elif opt[0] == "^L" or opt[0] == "clear":
             clear()
         else:
-            if opt[0] != "w":
-                print("\nWrong input try again\n")
+            if opt[0] != "`":
+                printRed("\nWrong input try again\n")
         opt = userInput(username=USERNAME)
 
 
@@ -133,17 +136,21 @@ def login(opt: list) -> None:
 
     if len(opt) == 2:
         if dblogin(opt[0], opt[1]):
-            print("\nSuccessfull login\n")
+            printGreen("\nSuccessfull login\n")
             LOGIN = True
             USERNAME = opt[0]
     else:
         while True:
-            print("\nPlease enter your login:")
+            printBlackOnWhite("\nPlease enter your login")
             login = userInput("(login) ")
-            print("Please enter your password")
+            if  login == "q" or login == "quit":
+                break
+            printBlackOnWhite("Please enter your password")
             password = userInput("(login) ")
+            if password == "q" or password == "quit":
+                break
             if dblogin(login, password):
-                print("Successfull login\n")
+                printGreen("Successfull login\n")
                 LOGIN = True
                 USERNAME = login
                 break
@@ -155,39 +162,51 @@ def signUp(opt: list) -> None:
         if createNewDB():
             login = opt[0]
             while True:
-                print("Please enter your password")
+                printBlackOnWhite("Please enter your password")
                 password = userInput("(signUp) ")
-                print("Please repeat your password")
+                if password == "q" or  password == "quit":
+                    break
+                printBlackOnWhite("Please repeat your password")
                 repeatPass = userInput("(signUp) ")
 
+                if repeatPass == "q" or repeatPass == "quit":
+                    break
                 if password == repeatPass:
                     break
                 else:
-                    print("Somthing is wrong with password try again")
+                    printRed("Somthing is wrong with password try again")
 
             if dbsignUp(login, password):
                 LOGIN = True
                 USERNAME = login
-                print("User successfully added")
+                printGreen("User successfully added")
     else:
         if createNewDB():
-            print("Please enter your login:")
+            printBlackOnWhite("Please enter your login:")
             login = userInput("(signUP) ")
+            if login == "q" or login == "quit":
+                return
             while True:
-                print("Please enter your password")
+                printBlackOnWhite("Please enter your password")
                 password = userInput("(signUp) ")
-                print("Please repeat your password")
+                if password == "q" or  password == "quit":
+                    break
+                printBlackOnWhite("Please repeat your password")
                 repeatPass = userInput("(signUp) ")
-
+                    
+                if repeatPass == "q" or repeatPass == "quit":
+                    break
                 if password == repeatPass:
                     break
                 else:
-                    print("Something is wrong with password try again")
+                    printRed("Something is wrong with password try again")
 
             if dbsignUp(login, password):
                 LOGIN = True
                 USERNAME = login
-                print("User successfully added")
+                printGreen("User successfully added")
+            else:
+                printRed("Something went wrong")
 
 
 def addPassword(opt: list) -> None:
@@ -196,51 +215,53 @@ def addPassword(opt: list) -> None:
         if LOGIN:
             name = opt[0]
 
-            print("\nEnter password or type g to generate one")
+            printBlackOnWhite("\nEnter password or type g to generate one")
             password = userInput("(add) ", USERNAME)
             while not checkPass(password):
                 if password == "g":
                     password = generatePass(USERNAME)
-                    print("Your new password: " + password)
+                    printBlackOnWhite("Your new password: " + password)
                     break
                 else:
+                    printRed("Your password is not safe.\nIt should contain min 2 lowercase characters, min 2 uppercase characters, min 2 digits and one special character")
                     password = userInput("(add) ", USERNAME)
 
-            print("Enter url for this password")
+            printBlackOnWhite("Entern url for this password")
             url = userInput("(add) ", USERNAME)
 
-            print("Enter folder name or leave it blank")
+            printBlackOnWhite("Enter folder name or leave it blank")
             folder = userInput("(add) ", USERNAME)
 
             if dbinsertPassword(name, password, url, folder, USERNAME):
-                print("Password successfully added\n")
+                printGreen("Password successfully added\n")
         else:
-            print("\nYou are not logged. Please log in\n")
+            printRed("\nYou are not logged. Please log in\n")
     else:
         if LOGIN:
-            print("\nEnter your pass name")
+            printBlackOnWhite("\nEnter your pass name")
             name = userInput("(add) ", USERNAME)
 
-            print("Enter password or type g to generate one")
+            printBlackOnWhite("Enter password or type g to generate one")
             password = userInput("(add) ", USERNAME)
             while not checkPass(password):
                 if password == "g":
                     password = generatePass(USERNAME)
-                    print("Your new password: " + password)
+                    printBlackOnWhite("Your new password: " + password)
                     break
                 else:
+                    printRed("Your password is not safe.\nIt should contain min 2 lowercase characters, min 2 uppercase characters, min 2 digits and one special character")
                     password = userInput("(add) ", USERNAME)
 
-            print("Enter url for this password")
+            printBlackOnWhite("Enter url for this password")
             url = userInput("(add) ", USERNAME)
 
-            print("Enter folder name or leave it blank")
+            printBlackOnWhite("Enter folder name or leave it blank")
             folder = userInput("(add) ", USERNAME)
 
             if dbinsertPassword(name, password, url, folder, USERNAME):
-                print("Password successfully added\n")
+                printGreen("Password successfully added\n")
         else:
-            print("\nYou are not logged. Please log in\n")
+            printRed("\nYou are not logged. Please log in\n")
 
 
 def getPassword(opt: list) -> None:
@@ -254,16 +275,16 @@ def getPassword(opt: list) -> None:
                 passData = dbgetPassword(opt[0], USERNAME)
                 copy2clip(passData[0]["password"])
                 displayPass(passData)
-                print("Password already clipped\n")
+                printGreen("Password already clipped\n")
         else:
-            print("\nPlease enter password name")
+            printBlackOnWhite("\nPlease enter password name")
             passName = userInput("(get) ", USERNAME)
             passData = dbgetPassword(passName, USERNAME)
             copy2clip(passData[0]["password"])
             displayPass(passData)
-            print("Password already clipped\n")
+            printGreen("Password already clipped\n")
     else:
-        print("You are not logged. Please log in\n")
+        printRed("You are not logged. Please log in\n")
 
 
 def deletePassword(opt: list) -> None:
@@ -273,9 +294,9 @@ def deletePassword(opt: list) -> None:
             passName = opt[0]
 
             if dbDeletePassowrd(passName, USERNAME):
-                print("Passoword successfully deleted")
+                printGreen("Passoword successfully deleted")
             else:
-                print("Something wrong with password name. Please try again")
+                printRed("Something wrong with password name. Please try again")
         else:
             pass
             #to finish
