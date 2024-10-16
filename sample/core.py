@@ -4,7 +4,7 @@ import time
 from sample.color.printColor import printBlackOnWhite, printGreen, printRed
 from sample.db import (
     createNewDB,
-    dbDeletePassowrd,
+    dbDeletePassword,
     dbChangePasswordName,
     dbgetAllPasswords,
     dbgetPassword,
@@ -20,6 +20,7 @@ from sample.utils import (
     userInput,
     generatePass,
     checkPass,
+    checkPassExist
 )
 
 SIZE = os.get_terminal_size()[0]
@@ -288,6 +289,34 @@ def getPassword(opt: list) -> None:
         printRed("You are not logged. Please log in\n")
             
 
+def deletePassword(opt: list) -> None:
+    global LOGIN, USERNAME
+
+    if LOGIN:
+        if opt and len(opt) == 1:
+            passName = opt[0]
+
+            if checkPassExist(passName=passName, username=USERNAME):
+                if dbDeletePassword(passName, USERNAME):
+                    printGreen("Passoword successfully deleted")
+                else:
+                    printRed("Something wrong went wrong in database")
+            else:
+                printRed("Wrong password name. Name does not exists in database")
+        else:
+            passName = userInput("(delete)", USERNAME)
+
+            if checkPassExist(passName=passName, username=USERNAME):
+                if dbDeletePassword(passName, USERNAME):
+                    printGreen("Passoword successfully deleted")
+                else:
+                    printRed("Something wrong went wrong in database")
+            else:
+                printRed("Wrong password name. Name does not exists in database")
+    else:
+        printRed("You are not logged. Please log in\n")
+
+
 def changePassword(opt: list) -> None:
     global LOGIN, USERNAME
 
@@ -295,22 +324,19 @@ def changePassword(opt: list) -> None:
         if opt and len(opt) == 1:
             passName = opt[0]
 
-            passData = dbgetPassword(passName=passName, username=USERNAME)
-            if not passData:
+            if checkPassExist(passName=passName, username=USERNAME):
+                
+                if dbChangePasswordName(passName, USERNAME):
+                    printGreen("Passoword successfully changed")
+                else:
+                    printRed("Something wrong with password name. Please try again")
+            else:
                 printRed("Wrong password name. Name does not exists in database")
-                return
-            else:
-                pass
-
-            if dbChangePasswordName(passName, USERNAME):
-                printGreen("Passoword successfully deleted")
-            else:
-                printRed("Something wrong with password name. Please try again")
         else:
             passName = userInput("(change)", USERNAME)
 
-            if dbDeletePassowrd(passName, USERNAME):
-                printGreen("Passoword successfully deleted")
+            if dbChangePasswordName(passName, USERNAME):
+                printGreen("Passoword successfully changed")
             else:
                 printRed("Something wrong with password name. Please try again")
     else:

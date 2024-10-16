@@ -181,7 +181,7 @@ def dbinsertPassword(passName: str, password: str, url: str, folder: str, userna
     return True
 
 
-def dbDeletePassowrd(passName: str, username: str) -> bool:
+def dbDeletePassword(passName: str, username: str) -> bool:
     sql = "DELTE FROM passwords WHERE name=? and user_id=?"
     conn = None
     cur = None

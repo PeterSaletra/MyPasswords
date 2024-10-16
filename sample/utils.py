@@ -6,6 +6,7 @@ import platform
 import subprocess
 
 from sample.color.color import Color
+from sample.db import dbgetPassword
 
 def copy2clip(data: str) -> None:
     if platform.system() == "Linux":
@@ -64,3 +65,12 @@ def checkPass(password: str) -> bool:
         return True
 
     return False
+
+
+def checkPassExist(passName: str, username: str) -> bool:
+    passData = dbgetPassword(passName=passName, username=username)
+
+    if len(passData) == 0:
+        return False
+    
+    return True
