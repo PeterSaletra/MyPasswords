@@ -2,6 +2,7 @@ import sqlite3
 import logging
 import time
 import os
+from sample.color.printColor import printBlackOnWhite, printGreen, printRed
 
 
 def createNewDB() -> bool:
@@ -40,7 +41,7 @@ def createNewDB() -> bool:
             """,
     ]
     if not os.path.isfile("mypasswords.db"):
-        print("Creating database...")
+        printBlackOnWhite("Creating database...")
         conn = None
         cur = None
         try:
@@ -58,7 +59,7 @@ def createNewDB() -> bool:
             if conn is not None:
                 conn.close()
     else:
-        print("Database already exists")
+        printGreen("Database already exists")
         return True
 
     return False
@@ -181,7 +182,7 @@ def dbinsertPassword(passName: str, password: str, url: str, folder: str, userna
 
 
 def dbDeletePassowrd(passName: str, username: str) -> bool:
-    sql = "DELTE FRON passwords WHERE name=? and user_id=?"
+    sql = "DELTE FROM passwords WHERE name=? and user_id=?"
     conn = None
     cur = None
     try:
@@ -201,6 +202,28 @@ def dbDeletePassowrd(passName: str, username: str) -> bool:
 
     return True
 
+def dbChangePasswordName(passName: str, username: str, **kwargs) -> bool:
+    set_clause = ', '.join([f"{key} = ?" for key in kwargs.keys()])
+
+    sql = f"UPDATE passwords SET {set_clause} WHERE name=? and user_id=?"
+    conn = None
+    cur = None
+    try:
+        conn = sqlite3.connect("mypasswords.db")
+        cur = conn.cursor()
+
+        cur.execute(sql, (passName, username))
+        conn.commit()
+    except sqlite3.Error as e:
+        logging.error(e)
+        return False
+    finally:
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
+
+    return True
 
 def row_to_dict(cursor: sqlite3.Cursor, row: sqlite3.Row) -> dict:
     data = {}

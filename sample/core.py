@@ -5,12 +5,14 @@ from sample.color.printColor import printBlackOnWhite, printGreen, printRed
 from sample.db import (
     createNewDB,
     dbDeletePassowrd,
+    dbChangePasswordName,
     dbgetAllPasswords,
     dbgetPassword,
     dbinsertPassword,
     dbsignUp,
     dblogin,
 )
+
 from sample.utils import (
     clear,
     copy2clip,
@@ -20,12 +22,9 @@ from sample.utils import (
     checkPass,
 )
 
-
-
 SIZE = os.get_terminal_size()[0]
 LOGIN = False
 USERNAME = ""
-
 
 def main() -> None:
     clear()
@@ -57,7 +56,7 @@ def main() -> None:
             time.sleep(1)
             clear()
             sys.exit()
-        elif opt[0] == "^L" or opt[0] == "clear":
+        elif opt[0] == "clear":
             clear()
         else:
             if opt[0] != "`":
@@ -128,7 +127,9 @@ def showOptions() -> None:
     print(
         "-> chanege(c) - change password. Type this command alone or followed by password name"
     )
+    print("-> clear - clear cmd\n")
     print("-> quit(q) - exit program\n")
+    
 
 
 def login(opt: list) -> None:
@@ -285,22 +286,32 @@ def getPassword(opt: list) -> None:
             printGreen("Password already clipped\n")
     else:
         printRed("You are not logged. Please log in\n")
+            
 
-
-def deletePassword(opt: list) -> None:
+def changePassword(opt: list) -> None:
     global LOGIN, USERNAME
+
     if LOGIN:
         if opt and len(opt) == 1:
             passName = opt[0]
+
+            passData = dbgetPassword(passName=passName, username=USERNAME)
+            if not passData:
+                printRed("Wrong password name. Name does not exists in database")
+                return
+            else:
+                pass
+
+            if dbChangePasswordName(passName, USERNAME):
+                printGreen("Passoword successfully deleted")
+            else:
+                printRed("Something wrong with password name. Please try again")
+        else:
+            passName = userInput("(change)", USERNAME)
 
             if dbDeletePassowrd(passName, USERNAME):
                 printGreen("Passoword successfully deleted")
             else:
                 printRed("Something wrong with password name. Please try again")
-        else:
-            pass
-            #to finish
-            
-
-def changePassword(opt: list) -> None:
-    pass
+    else:
+        printRed("You are not logged. Please log in\n")
