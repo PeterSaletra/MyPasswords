@@ -317,6 +317,38 @@ def deletePassword(opt: list) -> None:
         printRed("You are not logged. Please log in\n")
 
 
+def getChageValues() -> dict:
+    values = dict()
+
+    printBlackOnWhite("Enter new name")
+    printGreen("NOTE: if you don't want to change leave it blank(press Enter)")
+    passName = userInput("(change-passname)", USERNAME)
+    if passName:
+        values["name"] = passName
+
+    printBlackOnWhite("Enter new password(enter g if you want generate)")
+    password = userInput("(change-password)", USERNAME)
+    print(password)
+    if password == 'g':
+        password = generatePass(USERNAME)
+        printBlackOnWhite("Your new password: " + password)
+        values["password"] = password
+    elif password:
+        if checkPass(password):
+            values["password"] = password
+
+    printBlackOnWhite("Enter new url")
+    url = userInput("(change-url)", USERNAME)
+    if url:
+        values["url"] = url
+
+    printBlackOnWhite("Enter new folder id")
+    folder = userInput("(change-folder)", USERNAME)
+    if folder:
+        values["folder"] = folder
+
+    return values
+
 def changePassword(opt: list) -> None:
     global LOGIN, USERNAME
 
@@ -325,19 +357,22 @@ def changePassword(opt: list) -> None:
             passName = opt[0]
 
             if checkPassExist(passName=passName, username=USERNAME):
-                
-                if dbChangePasswordName(passName, USERNAME):
+                values = getChageValues()
+                if dbChangePasswordName(passName, USERNAME, values):
                     printGreen("Passoword successfully changed")
                 else:
                     printRed("Something wrong with password name. Please try again")
             else:
                 printRed("Wrong password name. Name does not exists in database")
         else:
+            printBlackOnWhite("Enter password name")
             passName = userInput("(change)", USERNAME)
 
-            if dbChangePasswordName(passName, USERNAME):
-                printGreen("Passoword successfully changed")
-            else:
-                printRed("Something wrong with password name. Please try again")
+            if checkPassExist(passName=passName, username=USERNAME):
+                values = getChageValues()
+                if dbChangePasswordName(passName, USERNAME, values):
+                    printGreen("Passoword successfully changed")
+                else:
+                    printRed("Something wrong with password name. Please try again")
     else:
         printRed("You are not logged. Please log in\n")

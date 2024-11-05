@@ -202,8 +202,8 @@ def dbDeletePassword(passName: str, username: str) -> bool:
 
     return True
 
-def dbChangePasswordName(passName: str, username: str, **kwargs) -> bool:
-    set_clause = ', '.join([f"{key} = ?" for key in kwargs.keys()])
+def dbChangePasswordName(passName: str, username: str, values: dict) -> bool:
+    set_clause = ', '.join([f"{key}=\"{values[key]}\" " for key in values])
 
     sql = f"UPDATE passwords SET {set_clause} WHERE name=? and user_id=?"
     conn = None

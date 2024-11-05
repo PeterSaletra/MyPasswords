@@ -42,11 +42,7 @@ def generatePass(username: str) -> str:
     alphabet = string.ascii_letters + string.digits + string.punctuation
     while True:
         password = "".join(secrets.choice(alphabet) for i in range(int(length)))
-        if (
-            sum(c.islower() for c in password) >= 4
-            and sum(c.isupper() for c in password) >= 4
-            and sum(c.isdigit() for c in password) >= 4
-        ):
+        if (sum(c.islower() for c in password) >= 4 and sum(c.isupper() for c in password) >= 4 and sum(c.isdigit() for c in password) >= 4):
             break
 
     return password
@@ -69,8 +65,7 @@ def checkPass(password: str) -> bool:
 
 def checkPassExist(passName: str, username: str) -> bool:
     passData = dbgetPassword(passName=passName, username=username)
-
-    if len(passData) == 0:
+    if passData[0] is None:
         return False
     
     return True
