@@ -2,12 +2,17 @@ package main
 
 import (
 	"fmt"
+	"mypasswords/auth"
 	"mypasswords/commands"
 	"os"
 )
 
 func main() {
 	if len(os.Args) > 1 {
+		if err := auth.Authenticate("mypasswords"); err != nil {
+			fmt.Fprintln(os.Stderr, "Authentication failed:", err)
+			os.Exit(1)
+		}
 		// Tryb CLI z argumentami
 		switch os.Args[1] {
 		case "add":

@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"mypasswords/auth"
 	"mypasswords/cli"
 	"os"
 
@@ -26,6 +27,11 @@ func Run(cmd *cobra.Command, args []string) {
 }
 
 func Execute() {
+	if err := auth.Authenticate("mypasswords"); err != nil {
+		fmt.Fprintln(os.Stderr, "Authentication failed:", err)
+		os.Exit(1)
+	}
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
