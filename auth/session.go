@@ -12,7 +12,11 @@ func getSessionFile() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(os.TempDir(), "mypasswords_session_"+u.Username), nil
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(homeDir, ".mypassword/session", "mypasswords_session_"+u.Username), nil
 }
 
 const sessionDuration = 15 * time.Minute
