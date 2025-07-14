@@ -11,8 +11,6 @@ github.com/mattn/go-shellwords v1.0.12 h1:M2zGm7EW6UQJvDeQxo4T51eKPurbeFbe8WtebG
 github.com/mattn/go-shellwords v1.0.12/go.mod h1:EZzvwXDESEeg03EKmM+RmDnNOPKG4lLtQsUlTZDWQ8Y=
 github.com/msteinert/pam v1.2.0 h1:mYfjlvN2KYs2Pb9G6nb/1f/nPfAttT/Jee5Sq9r3bGE=
 github.com/msteinert/pam v1.2.0/go.mod h1:d2n0DCUK8rGecChV3JzvmsDjOY4R7AYbsNxAT+ftQl0=
-github.com/msteinert/pam/v2 v2.1.0 h1:er5F9TKV5nGFuTt12ubtqPHEUdeBwReP7vd3wovidGY=
-github.com/msteinert/pam/v2 v2.1.0/go.mod h1:KT28NNIcDFf3PcBmNI2mIGO4zZJ+9RSs/At2PB3IDVc=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/spf13/cobra v1.8.1 h1:e5/vxKd/rZsfSJMUX1agtjeTDf+qv1/JdBF8gg5k9ZM=
 github.com/spf13/cobra v1.8.1/go.mod h1:wHxEcudfqmLYa8iTfL+OuZPbBZkmvliBWKIezN3kD9Y=
