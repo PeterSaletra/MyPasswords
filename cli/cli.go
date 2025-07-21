@@ -19,7 +19,10 @@ type Cli struct {
 }
 
 func NewCli() (*Cli, error) {
-	config := GetConfig("main")
+	config, err := GetConfig("main")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get config: %w", err)
+	}
 	l, err := readline.NewEx(config)
 	if err != nil {
 		return nil, fmt.Errorf("New readline error: %v", err)

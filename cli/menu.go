@@ -1,16 +1,25 @@
 package cli
 
 import (
+	"fmt"
+	"os/user"
+
 	"github.com/chzyer/readline"
 )
 
-func GetConfig(menu string) *readline.Config {
+func GetConfig(menu string) (*readline.Config, error) {
 	var config *readline.Config
+
+	u, err := user.Current()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get current user: %w", err)
+	}
+	username := u.Username
 
 	switch menu {
 	case "main":
 		config = &readline.Config{
-			Prompt:          "-> ",
+			Prompt:          "\033[32m" + "@" + username + " -> " + "\033[0m",
 			HistoryFile:     "/tmp/readline.tmp",
 			AutoComplete:    GetCompleter(menu),
 			InterruptPrompt: "^C",
@@ -22,7 +31,7 @@ func GetConfig(menu string) *readline.Config {
 
 	}
 
-	return config
+	return config, nil
 }
 
 func GetCompleter(menu string) *readline.PrefixCompleter {
