@@ -19,12 +19,12 @@ func NewDatabase() *Database {
 }
 
 func (d *Database) Connect(master_key string) error {
-	homedDir, err := os.UserHomeDir()
+	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return fmt.Errorf("failed to get home directory: %w", err)
 	}
 
-	dbDir := filepath.Join(homedDir, ".local", "mypasswords", "db")
+	dbDir := filepath.Join(homeDir, ".local", "mypasswords", "db")
 	dbFile := filepath.Join(dbDir, "mypasswords.db")
 
 	if err := os.MkdirAll(dbDir, 0700); err != nil {
@@ -39,14 +39,12 @@ func (d *Database) Connect(master_key string) error {
 		file.Close()
 	}
 
-	dsn := fmt.Sprintf("file:%s?_pragma_key=%s&_pragma_cipher_page_size=%d", dbFile, master_key, 4096)
+	// For development - use simple DSN without encryption
+	// dsn := fmt.Sprintf("file:%s?_pragma_key=%s&_pragma_cipher_page_size=%d", dbFile, master_key, 4096)
+	dsn := dbFile
 
 	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{
 		NowFunc: func() time.Time {
-
-			currentTime := time.Now()
-			_, offset := currentTime.Zone()
-			mysqlTime := currentTime.Add(time.Second * time.Duration(offset))
 			return time.Now()
 		},
 	})
