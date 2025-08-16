@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"mypasswords/auth"
 	"mypasswords/cli"
+	"mypasswords/store"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -17,7 +18,18 @@ var rootCmd = &cobra.Command{
 }
 
 func Run(cmd *cobra.Command, args []string) {
-	c, err := cli.NewCli()
+	if err := auth.Authenticate("mypasswords"); err != nil {
+		fmt.Fprintln(os.Stderr, "Authentication failed:", err)
+		os.Exit(1)
+	}
+
+	db := store.NewDatabase()
+	if err := db.Connect("your_master_key_here"); err != nil {
+		fmt.Fprintln(os.Stderr, "Failed to connect to database:", err)
+		return
+	}
+
+	c, err := cli.NewCli(db)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return
@@ -27,11 +39,6 @@ func Run(cmd *cobra.Command, args []string) {
 }
 
 func Execute() {
-	if err := auth.Authenticate("mypasswords"); err != nil {
-		fmt.Fprintln(os.Stderr, "Authentication failed:", err)
-		os.Exit(1)
-	}
-
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

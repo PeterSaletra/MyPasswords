@@ -1,15 +1,20 @@
 package shell
 
 import (
+	"mypasswords/store"
+
 	"github.com/spf13/cobra"
 )
 
 type Shell struct {
 	rootCmd *cobra.Command
+	db      *store.Database
 }
 
-func NewShell() *Shell {
-	return &Shell{}
+func NewShell(db *store.Database) *Shell {
+	return &Shell{
+		db: db,
+	}
 }
 
 func (s *Shell) PrepareCommands() {

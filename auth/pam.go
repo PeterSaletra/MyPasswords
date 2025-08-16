@@ -11,6 +11,8 @@ import (
 )
 
 func Authenticate(app string) error {
+	// Add verification if this is first time using the app
+
 	// Check session file
 	if ts, err := readSessionTimestamp(); err == nil {
 		if time.Since(ts) < sessionDuration {
