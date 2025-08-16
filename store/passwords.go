@@ -38,6 +38,9 @@ func (db *Database) GetAllPasswordsNames() ([]string, error) {
 	var names []string
 	for _, p := range passwords {
 		names = append(names, p.Name)
+	var names []string
+	if err := db.DB.Model(&Password{}).Select("name").Scan(&names).Error; err != nil {
+		return nil, err
 	}
 	return names, nil
 }
