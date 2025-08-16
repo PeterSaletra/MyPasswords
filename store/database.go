@@ -47,7 +47,7 @@ func (d *Database) Connect(master_key string) error {
 			currentTime := time.Now()
 			_, offset := currentTime.Zone()
 			mysqlTime := currentTime.Add(time.Second * time.Duration(offset))
-			return mysqlTime
+			return time.Now()
 		},
 	})
 	if err != nil {
