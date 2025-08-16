@@ -28,6 +28,6 @@ func (db *Database) GetUserByUsername(username string) (*User, error) {
 	return &user, nil
 }
 
-func (db *Database) UpdateLLastLogin(user *User) error {
+func (db *Database) UpdateLastLogin(user *User) error {
 	return db.DB.Model(user).Update("last_login", time.Now()).Error
 }
