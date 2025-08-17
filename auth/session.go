@@ -2,21 +2,16 @@ package auth
 
 import (
 	"os"
-	"os/user"
 	"path/filepath"
 	"time"
 )
 
 func getSessionFile() (string, error) {
-	u, err := user.Current()
-	if err != nil {
-		return "", err
-	}
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(homeDir, ".local/mypasswords/session", "mypasswords_session_"+u.Username), nil
+	return filepath.Join(homeDir, ".local/.mypasswords/session", "session_timestamp"), nil
 }
 
 const sessionDuration = 15 * time.Minute
