@@ -24,7 +24,7 @@ func (d *Database) Connect(master_key string) error {
 		return fmt.Errorf("failed to get home directory: %w", err)
 	}
 
-	dbDir := filepath.Join(homedDir, ".local", "mypasswords", "db")
+	dbDir := filepath.Join(homedDir, ".local", ".mypasswords", "db")
 	dbFile := filepath.Join(dbDir, "mypasswords.db")
 
 	if err := os.MkdirAll(dbDir, 0700); err != nil {
@@ -43,10 +43,6 @@ func (d *Database) Connect(master_key string) error {
 
 	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{
 		NowFunc: func() time.Time {
-
-			currentTime := time.Now()
-			_, offset := currentTime.Zone()
-			mysqlTime := currentTime.Add(time.Second * time.Duration(offset))
 			return time.Now()
 		},
 	})
