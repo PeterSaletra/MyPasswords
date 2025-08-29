@@ -18,13 +18,14 @@ var rootCmd = &cobra.Command{
 }
 
 func Run(cmd *cobra.Command, args []string) {
-	if err := auth.Authenticate("mypasswords"); err != nil {
+	keys, err := auth.Authenticate("mypasswords")
+	if err != nil {
 		fmt.Fprintln(os.Stderr, "Authentication failed:", err)
 		os.Exit(1)
 	}
 
 	db := store.NewDatabase()
-	if err := db.Connect("your_master_key_here"); err != nil {
+	if err := db.Connect(keys.Master_key); err != nil {
 		fmt.Fprintln(os.Stderr, "Failed to connect to database:", err)
 		return
 	}

@@ -9,7 +9,7 @@ require (
 	github.com/mattn/go-shellwords v1.0.12
 	github.com/msteinert/pam v1.2.0
 	github.com/spf13/cobra v1.8.1
-	golang.org/x/term v0.33.0
+	golang.org/x/term v0.34.0
 	gorm.io/driver/sqlite v1.6.0
 	gorm.io/gorm v1.30.1
 )
@@ -21,6 +21,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/xeodou/go-sqlcipher v0.0.0-20200727080346-d681773ef093 // indirect
-	golang.org/x/sys v0.34.0 // indirect
-	golang.org/x/text v0.20.0 // indirect
+	golang.org/x/crypto v0.41.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 )

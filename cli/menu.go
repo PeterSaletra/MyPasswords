@@ -19,7 +19,7 @@ func GetConfig(menu string) (*readline.Config, error) {
 	switch menu {
 	case "main":
 		config = &readline.Config{
-			Prompt:          "\033[32m" + "@" + username + " -> " + "\033[0m",
+			Prompt:          "\033[34m" + "MyPasswords" + "\033[32m" + "@" + username + " -> " + "\033[0m",
 			HistoryFile:     "/tmp/readline.tmp",
 			AutoComplete:    GetCompleter(menu),
 			InterruptPrompt: "^C",
