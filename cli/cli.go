@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"mypasswords/commands/shell"
+	"mypasswords/crypto"
 	"mypasswords/store"
 	"strings"
 
@@ -19,7 +20,7 @@ type Cli struct {
 	shell *shell.Shell
 }
 
-func NewCli(db *store.Database) (*Cli, error) {
+func NewCli(db *store.Database, keys *crypto.Keys) (*Cli, error) {
 	config, err := GetConfig("main")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get config: %w", err)
@@ -29,7 +30,7 @@ func NewCli(db *store.Database) (*Cli, error) {
 		return nil, fmt.Errorf("New readline error: %v", err)
 	}
 
-	s := shell.NewShell(db)
+	s := shell.NewShell(db, keys)
 	s.PrepareCommands()
 	return &Cli{
 		rl:    l,

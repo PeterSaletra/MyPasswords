@@ -9,8 +9,9 @@ import (
 type Password struct {
 	gorm.Model
 	ID                int    `json:"password_id" gorm:"primaryKey"`
+	UserID            uint   `json:"user_id" gorm:"not null"` // Foreign key to User
 	Name              string `gorm:"uniqueIndex"`
-	Website           string `gorm:"uniqueIndex"`
+	Url               string `gorm:"uniqueIndex"`
 	Username          string
 	EncryptedPassword []byte `gorm:"type:blob"`
 	VI                []byte `gorm:"type:blob"`

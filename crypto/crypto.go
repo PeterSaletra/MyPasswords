@@ -11,6 +11,11 @@ import (
 	"golang.org/x/crypto/pbkdf2"
 )
 
+type Keys struct {
+	master_hash string
+	Master_key  string
+}
+
 func deriveKeyPBKDF2(password string, salt string, iterations, keyLen int) string {
 	if iterations == 0 {
 		iterations = 100_000
@@ -36,11 +41,8 @@ func GenerateIV(lenght int) (string, error) {
 	return hex.EncodeToString(iv), nil
 }
 
-// Maybe change it to (key* MasterKey) EncryptAESCBC ...
-// TODO: Think about it maybe it makes more sens lol
-
-func EncryptAESCBC(plaintext string, key string, iv string) (string, error) {
-	bKey := []byte(key)
+func (keys *Keys) EncryptAESCBC(plaintext string, iv string) (string, error) {
+	bKey := []byte(keys.master_hash)
 	bIV := []byte(iv)
 
 	block, err := aes.NewCipher(bKey)
@@ -56,11 +58,8 @@ func EncryptAESCBC(plaintext string, key string, iv string) (string, error) {
 	return hex.EncodeToString(ciphertext), nil
 }
 
-// Maybe change it to (key* MasterKey) DecryptAESCBC ...
-// TODO: Think about it maybe it makes more sens lol
-
-func DecryptAESCBC(ciphertext string, key string, iv string) (string, error) {
-	bKey := []byte(key)
+func (keys *Keys) DecryptAESCBC(ciphertext string, iv string) (string, error) {
+	bKey := []byte(keys.master_hash)
 	bIV := []byte(iv)
 
 	block, err := aes.NewCipher(bKey)
@@ -76,10 +75,10 @@ func DecryptAESCBC(ciphertext string, key string, iv string) (string, error) {
 	return hex.EncodeToString(plaintext), nil
 }
 
-func DeriveMasterHash(password string, username string) string {
-	return deriveKeyPBKDF2(password, username, 100_000, 32)
+func (keys *Keys) DeriveMasterHash(password string, username string) {
+	keys.master_hash = deriveKeyPBKDF2(password, username, 100_000, 32)
 }
 
-func DeriveMasterKey(master_hash string, password string) string {
-	return deriveKeyPBKDF2(master_hash, password, 100_000, 32)
+func (keys *Keys) DeriveMasterKey(password string) {
+	keys.Master_key = deriveKeyPBKDF2(keys.master_hash, password, 100_000, 32)
 }

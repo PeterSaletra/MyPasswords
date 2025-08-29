@@ -11,39 +11,44 @@ import (
 	"golang.org/x/term"
 )
 
-type Keys struct {
-	Master_hash string
-	Master_key  string
+type AuthResult struct {
+	Keys      *crypto.Keys
+	FirstTime bool
+	Username  string
 }
 
-func Authenticate(app string) (*Keys, error) {
-	var keys Keys
+func Authenticate(app string) (*AuthResult, error) {
+	var keys crypto.Keys
 
 	u, err := user.Current()
 	if err != nil {
-		return &keys, fmt.Errorf("Failed to get current user: %w", err)
+		return nil, fmt.Errorf("Failed to get current user: %w", err)
 	}
 	username := u.Username
 
-	// Add verification if this is first time using the app
 	firstTime := checkUserFistTime()
 	if firstTime {
-		// Add hanlder for first time
-		// Must include creating folder with subfolders for session and database
-		// Propmting to enter new master password with double check
 		password, err := handleFirstTime()
 		if err != nil {
-			return &keys, err
+			return &AuthResult{Keys: &keys, FirstTime: true}, err
 		}
-		keys.Master_hash = crypto.DeriveMasterHash(password, username)
-		keys.Master_key = crypto.DeriveMasterKey(keys.Master_hash, password)
+		keys.DeriveMasterHash(password, username)
+		keys.DeriveMasterKey(password)
 
-		return &keys, nil
+		return &AuthResult{
+			Keys:      &keys,
+			FirstTime: true,
+			Username:  username,
+		}, nil
 
 	} else {
 		if ts, err := readSessionTimestamp(); err == nil {
 			if time.Since(ts) < sessionDuration {
-				return &keys, nil // Session still valid
+				return &AuthResult{
+					Keys:      &keys,
+					FirstTime: false,
+					Username:  username,
+				}, nil
 			}
 		}
 	}
@@ -51,11 +56,15 @@ func Authenticate(app string) (*Keys, error) {
 	fmt.Print("Enter new master password: ")
 	password, _ := term.ReadPassword(int(os.Stdin.Fd()))
 
-	keys.Master_hash = crypto.DeriveMasterHash(string(password), username)
-	keys.Master_key = crypto.DeriveMasterKey(keys.Master_hash, string(password))
+	keys.DeriveMasterHash(string(password), username)
+	keys.DeriveMasterKey(string(password))
 
 	_ = saveSessionTimestamp(time.Now())
-	return &keys, nil
+	return &AuthResult{
+		Keys:      &keys,
+		FirstTime: false,
+		Username:  username,
+	}, nil
 }
 
 func checkUserFistTime() bool {
@@ -110,5 +119,10 @@ func handleFirstTime() (string, error) {
 		return "", fmt.Errorf("passwords do not match")
 	}
 
-	return "", saveSessionTimestamp(time.Now())
+	err = saveSessionTimestamp(time.Now())
+	if err != nil {
+		return "", err
+	}
+
+	return string(password), nil
 }
