@@ -40,18 +40,18 @@ func Authenticate(app string) (*AuthResult, error) {
 			FirstTime: true,
 			Username:  username,
 		}, nil
-
-	} else {
-		if ts, err := readSessionTimestamp(); err == nil {
-			if time.Since(ts) < sessionDuration {
-				return &AuthResult{
-					Keys:      &keys,
-					FirstTime: false,
-					Username:  username,
-				}, nil
-			}
-		}
 	}
+	// } else {
+	// 	if ts, err := readSessionTimestamp(); err == nil {
+	// 		if time.Since(ts) < sessionDuration {
+	// 			return &AuthResult{
+	// 				Keys:      &keys,
+	// 				FirstTime: false,
+	// 				Username:  username,
+	// 			}, nil
+	// 		}
+	// 	}
+	// }
 
 	fmt.Print("Enter new master password: ")
 	password, _ := term.ReadPassword(int(os.Stdin.Fd()))

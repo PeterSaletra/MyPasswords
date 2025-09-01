@@ -8,9 +8,8 @@ import (
 )
 
 type Shell struct {
-	rootCmd *cobra.Command
-	db      *store.Database
-	keys    *crypto.Keys
+	db   *store.Database
+	keys *crypto.Keys
 }
 
 func NewShell(db *store.Database, keys *crypto.Keys) *Shell {
@@ -20,16 +19,16 @@ func NewShell(db *store.Database, keys *crypto.Keys) *Shell {
 	}
 }
 
-func (s *Shell) PrepareCommands() {
-	s.rootCmd = &cobra.Command{}
+func (s *Shell) Execute(args []string) error {
+	rootCmd := &cobra.Command{}
 
-	s.rootCmd.AddCommand(&cobra.Command{
+	rootCmd.AddCommand(&cobra.Command{
 		Use:   "exit",
 		Short: "Exit the Client",
 		Long:  "Closes all clients and exits the CLI.",
 		Run:   s.ExitCmd,
 	})
-	s.rootCmd.AddCommand(&cobra.Command{
+	rootCmd.AddCommand(&cobra.Command{
 		Use:   "clear",
 		Short: "Clear the screen",
 		Long:  "Clears the terminal screen.",
@@ -39,8 +38,9 @@ func (s *Shell) PrepareCommands() {
 	add := &cobra.Command{
 		Use:   "add",
 		Short: "Add a new password",
-		Long:  "Adds a new password to the database.",
+		Long:  "Adds a new password to the database interactively. Use flags to skip prompts.",
 		Run:   s.AddPassword,
+		Args:  cobra.NoArgs,
 	}
 	add.Flags().StringP("name", "n", "", "Name of the password entry")
 	add.Flags().StringP("username", "u", "", "Username for the password entry")
@@ -48,11 +48,30 @@ func (s *Shell) PrepareCommands() {
 	add.Flags().StringP("url", "l", "", "URL for the password entry")
 	add.Flags().StringP("notes", "o", "", "Notes for the password entry")
 
-	s.rootCmd.AddCommand(add)
+	rootCmd.AddCommand(add)
 
-}
+	list := &cobra.Command{
+		Use:   "list",
+		Short: "List all passwords",
+		Long:  "Lists all passwords stored in the database.",
+		Run:   s.ListPasswords,
+	}
 
-func (s *Shell) Execute(args []string) error {
-	s.rootCmd.SetArgs(args)
-	return s.rootCmd.Execute()
+	list.Flags().BoolP("show", "s", false, "Show detailed information")
+	rootCmd.AddCommand(list)
+
+	get := &cobra.Command{
+		Use:   "get [name]",
+		Short: "Get a password",
+		Long:  "Retrieves a password from the database.",
+		Args:  cobra.ExactArgs(1),
+		Run:   s.GetPassword,
+	}
+	get.Flags().BoolP("show", "s", false, "Show detailed information")
+	get.Flags().StringP("copy", "c", "", "Copy to clipboard: password, username, url")
+
+	rootCmd.AddCommand(get)
+
+	rootCmd.SetArgs(args)
+	return rootCmd.Execute()
 }

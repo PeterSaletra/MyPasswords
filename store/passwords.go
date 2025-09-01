@@ -9,14 +9,14 @@ import (
 type Password struct {
 	gorm.Model
 	ID                int    `json:"password_id" gorm:"primaryKey"`
-	UserID            uint   `json:"user_id" gorm:"not null"` // Foreign key to User
 	Name              string `gorm:"uniqueIndex"`
 	Url               string `gorm:"uniqueIndex"`
 	Username          string
 	EncryptedPassword []byte `gorm:"type:blob"`
-	VI                []byte `gorm:"type:blob"`
+	IV                []byte `gorm:"type:blob"`
 	Notes             string
 	LastUsed          time.Time
+	User              string
 }
 
 func (db *Database) CreatePassword(password *Password) error {

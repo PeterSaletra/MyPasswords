@@ -8,10 +8,10 @@ import (
 
 type User struct {
 	gorm.Model
-	Username  string    `gorm:"uniqueIndex"`
+	Username  string    `gorm:"primaryKey"`
 	LastLogin time.Time `json:"last_login" gorm:"autoCreateTime"`
 
-	Passwords []Password `gorm:"foreignKey:UserID;references:Username"`
+	Passwords []Password `gorm:"foreignKey:User;references:Username"`
 }
 
 func (db *Database) CreateUser(user *User) error {

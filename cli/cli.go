@@ -31,7 +31,7 @@ func NewCli(db *store.Database, keys *crypto.Keys) (*Cli, error) {
 	}
 
 	s := shell.NewShell(db, keys)
-	s.PrepareCommands()
+	// s.PrepareCommands()
 	return &Cli{
 		rl:    l,
 		shell: s,
