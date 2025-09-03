@@ -3,6 +3,7 @@ package store
 import (
 	"fmt"
 	"os"
+	"os/user"
 	"path/filepath"
 	"time"
 
@@ -18,7 +19,7 @@ func NewDatabase() *Database {
 	return &Database{}
 }
 
-func (d *Database) Connect(master_key string) error {
+func (d *Database) Connect(master_key string, autoMigrate bool) error {
 	homedDir, err := os.UserHomeDir()
 	if err != nil {
 		return fmt.Errorf("failed to get home directory: %w", err)
@@ -51,6 +52,22 @@ func (d *Database) Connect(master_key string) error {
 	}
 
 	d.DB = db
+
+	if autoMigrate {
+		if err := d.Migrate(); err != nil {
+			return fmt.Errorf("failed to auto-migrate database: %w", err)
+		}
+		u, err := user.Current()
+		if err != nil {
+			return fmt.Errorf("Failed to get current user: %w", err)
+		}
+		username := u.Username
+		user := User{
+			Username: username,
+		}
+		d.CreateUser(&user)
+	}
+
 	return nil
 }
 

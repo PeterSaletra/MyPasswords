@@ -18,19 +18,24 @@ var rootCmd = &cobra.Command{
 }
 
 func Run(cmd *cobra.Command, args []string) {
-	keys, err := auth.Authenticate("mypasswords")
+	authResult, err := auth.Authenticate("mypasswords")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Authentication failed:", err)
 		os.Exit(1)
 	}
 
 	db := store.NewDatabase()
-	if err := db.Connect(keys.Master_key); err != nil {
+	if err := db.Connect(authResult.Keys.Master_key, authResult.FirstTime); err != nil {
 		fmt.Fprintln(os.Stderr, "Failed to connect to database:", err)
 		return
 	}
 
-	c, err := cli.NewCli(db)
+	if err := db.UpdateLastLogin(authResult.Username); err != nil {
+		fmt.Fprintln(os.Stderr, "Failed to update last login:", err)
+		return
+	}
+
+	c, err := cli.NewCli(db, authResult.Keys)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return
