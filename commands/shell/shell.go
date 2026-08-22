@@ -20,7 +20,13 @@ func NewShell(db *store.Database, keys *crypto.Keys) *Shell {
 }
 
 func (s *Shell) Execute(args []string) error {
-	rootCmd := &cobra.Command{}
+	rootCmd := &cobra.Command{
+		Use: "mypasswords",
+		CompletionOptions: cobra.CompletionOptions{
+			HiddenDefaultCmd: true, // hides cmd
+			// DisableDefaultCmd: true, // removes cmd
+		},
+	}
 
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "exit",

@@ -122,12 +122,12 @@ func (s *Shell) GetPassword(cmd *cobra.Command, args []string) {
 				cmd.PrintErrf("Failed to decrypt password: %v\n", err)
 				return
 			}
-			clipboard.Write(clipboard.FmtText, []byte(decrypted))
+			clipboard.Write(cmd.Context(), clipboard.FmtText, []byte(decrypted))
 
 		case "username":
-			clipboard.Write(clipboard.FmtText, []byte(password.Username))
+			clipboard.Write(cmd.Context(), clipboard.FmtText, []byte(password.Username))
 		case "url":
-			clipboard.Write(clipboard.FmtText, []byte(password.Url))
+			clipboard.Write(cmd.Context(), clipboard.FmtText, []byte(password.Url))
 		default:
 			cmd.PrintErrf("Invalid copy option: %s\n", copy)
 			return
